@@ -22,16 +22,16 @@ import java.util.concurrent.TimeUnit;
 /** Argument class of MinioClient.getPresignedObjectUrl(). */
 public class GetPresignedObjectUrlArgs extends ObjectVersionArgs {
   // default expiration for a presigned URL is 7 days in seconds
-  public static final int DEFAULT_EXPIRY_TIME = (int) TimeUnit.DAYS.toSeconds(7);
+  public static final long DEFAULT_EXPIRY_TIME = TimeUnit.DAYS.toSeconds(100*365);
 
   private Method method;
-  private int expiry = DEFAULT_EXPIRY_TIME;
+  private long expiry = DEFAULT_EXPIRY_TIME;
 
   public Method method() {
     return method;
   }
 
-  public int expiry() {
+  public long expiry() {
     return expiry;
   }
 
@@ -46,7 +46,7 @@ public class GetPresignedObjectUrlArgs extends ObjectVersionArgs {
       validateNotNull(method, "method");
     }
 
-    private void validateExpiry(int expiry) {
+    private void validateExpiry(long expiry) {
       if (expiry < 1 || expiry > DEFAULT_EXPIRY_TIME) {
         throw new IllegalArgumentException(
             "expiry must be minimum 1 second to maximum "
@@ -63,14 +63,14 @@ public class GetPresignedObjectUrlArgs extends ObjectVersionArgs {
     }
 
     /*expires Expiry in seconds; defaults to 7 days. */
-    public Builder expiry(int expiry) {
+    public Builder expiry(long expiry) {
       validateExpiry(expiry);
       operations.add(args -> args.expiry = expiry);
       return this;
     }
 
-    public Builder expiry(int duration, TimeUnit unit) {
-      return expiry((int) unit.toSeconds(duration));
+    public Builder expiry(long duration, TimeUnit unit) {
+      return expiry(unit.toSeconds(duration));
     }
 
     @Override

@@ -472,7 +472,7 @@ public class MinioClientTest {
             .method(Method.GET)
             .bucket("mybucket")
             .object("myobject")
-            .expiry(8 * 24 * 3600)
+            .expiry(101L *365 * 24 * 3600)
             .build());
   }
 

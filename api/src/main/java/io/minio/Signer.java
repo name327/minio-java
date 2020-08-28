@@ -307,7 +307,7 @@ class Signer {
     return request.newBuilder().header("Authorization", signer.authorization).build();
   }
 
-  private void setPresignCanonicalRequest(int expires) throws NoSuchAlgorithmException {
+  private void setPresignCanonicalRequest(long expires) throws NoSuchAlgorithmException {
     this.canonicalHeaders = new TreeMap<>();
     this.canonicalHeaders.put("host", this.request.headers().get("Host"));
     this.signedHeaders = "host";
@@ -321,7 +321,7 @@ class Signer {
     urlBuilder.addEncodedQueryParameter(
         S3Escaper.encode("X-Amz-Date"), S3Escaper.encode(this.date.format(Time.AMZ_DATE_FORMAT)));
     urlBuilder.addEncodedQueryParameter(
-        S3Escaper.encode("X-Amz-Expires"), S3Escaper.encode(Integer.toString(expires)));
+        S3Escaper.encode("X-Amz-Expires"), S3Escaper.encode(Long.toString(expires)));
     urlBuilder.addEncodedQueryParameter(
         S3Escaper.encode("X-Amz-SignedHeaders"), S3Escaper.encode(this.signedHeaders));
     this.url = urlBuilder.build();
@@ -349,7 +349,7 @@ class Signer {
    * time.
    */
   public static HttpUrl presignV4(
-      Request request, String region, String accessKey, String secretKey, int expires)
+      Request request, String region, String accessKey, String secretKey, long expires)
       throws NoSuchAlgorithmException, InvalidKeyException {
     String contentSha256 = "UNSIGNED-PAYLOAD";
     ZonedDateTime date = ZonedDateTime.parse(request.header("x-amz-date"), Time.AMZ_DATE_FORMAT);
